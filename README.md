@@ -55,6 +55,29 @@ The Add Book feature allows users to create and submit a new book entry into the
 		return "form";
 	}
 ```
+### Example API Body for Adding a Book
+```json
+{
+  "title": "Effective Java",
+  "author": "Joshua Bloch",
+  "publishedDate": "2018-01-06",
+  "isbn": "9780134685991",
+  "price": 45.99,
+  "description": "A comprehensive guide to best practices in Java programming.",
+  "category": "Programming",
+  "stock": 100
+}
+```
+### Explanation of Fields
+`title`: The title of the book.<br>
+`author`: The author(s) of the book.<br>
+`publishedDate`: The date when the book was published, typically in ISO format (YYYY-MM-DD).<br>
+`isbn`: A unique identifier for the book, often used as a standard identifier for books.<br>
+`price`: The price of the book.<br>
+`description`: A short description of the book’s contents.<br>
+`category`: The genre or category of the book, such as "Programming" or "Fiction."<br>
+`stock`: The number of copies available in the bookstore.<br>
+
 ### 2.**DeleteBook**
 The Delete Book feature allows users to remove a book from the bookstore's inventory. This functionality is essential for maintaining an up-to-date collection by enabling users to delete any books that are no longer available or necessary.
 ```java
@@ -64,6 +87,12 @@ The Delete Book feature allows users to remove a book from the bookstore's inven
 		return "redirect:/book";
 	}
 ```
+### Delete Book API Body<br>
+For the Delete operation, typically no body is sent; only the book ID is needed in the URL:<br>
+
+**Endpoint**: DELETE /book/{id}<br>
+**Example URL**: DELETE /book/1<br>
+*No request body is needed, as the book ID is passed in the URL*.<br>
 
 ### 3.**PlaceOrder**
 The Place Order feature enables customers to finalize their purchase by placing an order for items in their shopping cart. This functionality is crucial for completing transactions and ensuring customers receive their ordered products.
@@ -80,6 +109,38 @@ public String placeOrder(@Valid Customer customer, BindingResult result, Redirec
 		return "redirect:/cart";
 	}
 ```
+### Place Order API Body
+
+```json
+{
+  "customer": {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "555-1234"
+  },
+  "items": [
+    {
+  "bookId": 1,
+      "quantity": 1
+    },
+    {
+      "bookId": 2,
+      "quantity": 2
+    }
+  ]
+}
+```
+### Field Explanation<br>
+`customer`: An object containing customer information.<br>
+`name`: The full name of the customer.<br>
+`email`: The customer's email address.<br>
+`address`: The shipping address where the order should be sent.<br>
+`phone`: The contact phone number of the customer.<br>
+`items`: An array of items being ordered.<br>
+`bookId`: The unique identifier for the book being ordered.<br>
+`quantity`: The number of copies of that book to order.<br>
+
 ### 4.**Checkout**
 The Checkout feature allows customers to review their shopping cart and input their information before placing an order. This functionality is vital for finalizing purchases and ensuring a smooth transition from shopping to ordering.
 
@@ -96,6 +157,46 @@ public String checkout(Model model) {
 		return "checkout";
 	}
 ```
+
+### Checkout API Body<br>
+To checkout, use the following request body:
+
+```json
+{
+  "customer": {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "555-1234"
+  },
+  "cart": [
+    {
+      "bookId": 1,
+      "quantity": 1
+    },
+    {
+      "bookId": 3,
+      "quantity": 1
+    }
+  ],
+  "totalPrice": 101.98,
+  "shippingCosts": 5.00
+}
+```
+### Field Explanation<br>
+`customer`: An object with the same fields as in the Place Order API.<br>
+
+`cart`: An array representing items in the shopping cart.<br>
+
+`bookId`: The unique identifier for each book in the cart.<br>
+`quantity`: The number of copies for each book in the cart.<br>
+`totalPrice`: The total price of all items in the cart.<br>
+
+`shippingCosts`: The cost associated with shipping the order.<br>
+
+
+
+
 ### 5.**AddToCart**
 This method adds a specific book to the user's shopping cart based on the book's unique ID.
 
@@ -112,6 +213,20 @@ public String addToCart(@PathVariable("id") Long id, RedirectAttributes redirect
 	}
 ```
 
+Add to Cart API Body<br>
+To add a book to the cart, use the following request body:
+
+```json
+
+{
+  "bookId": 1,
+  "quantity": 1
+}
+```
+### Field Explanation<br>
+`bookId`: The unique identifier for the book to add to the cart.<br>
+`quantity`: The number of copies of the book to add.<br>
+
 
 ### 6.**RemoveFromCart**
 This method removes a specific book from the user's shopping cart based on the book's unique ID.
@@ -127,7 +242,12 @@ This method removes a specific book from the user's shopping cart based on the b
 		return "redirect:/cart";
 	}
 ```
+### Remove from Cart API Body<br>
+To remove a specific book from the cart, use the following endpoint:<br>
 
+Endpoint: DELETE /cart/remove/{id}<br>
+### Field Explanation<br>
+`id`: The unique identifier for the book to be removed from the cart, specified in the URL. No body is required.
 
 
 ### 7.**RemoveAllFromCart**
@@ -141,6 +261,12 @@ This method removes a specific book from the user's shopping cart based on the b
 		return "redirect:/cart";
 	}
 ```
+### Remove All from Cart API Body
+To clear all items from the cart, use the following endpoint:<br>
+
+Endpoint: DELETE /cart/remove/all<br>
+### Field Explanation
+*This operation does not require any body. It simply clears all items from the cart when the endpoint is called*.
 
 
 
